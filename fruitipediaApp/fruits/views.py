@@ -1,11 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
+from fruitipediaApp.fruits.models import Fruit
+from fruitipediaApp.fruits.forms import CategoryCreateForm
+
+
 def index(request):
     return render(request, 'common/index.html')
 
 def dashboard(request):
-    return render(request, 'common/dashboard.html')
+    fruits=Fruit.objects.all()
+    context={
+        'fruits': fruits
+    }
+    return render(request, 'common/dashboard.html', context)
 
 def create_fruit(request):
     return render(request, 'fruits/create-fruit.html')
@@ -20,4 +28,15 @@ def delete_fruit(request):
     return render(request, 'fruits/delete-fruit.html')
 
 def create_category(request):
-    return render(request, 'categories/create-category.html')
+    if request.method=='GET':
+        form=CategoryCreateForm()
+    else:
+        form=CategoryCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+
+    context={
+        'form': form
+    }
+    return render(request, 'categories/create-category.html', context)
