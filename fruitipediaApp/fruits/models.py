@@ -6,6 +6,9 @@ from fruitipediaApp.fruits.validators import validate_name
 class Category(models.Model):
     name=models.CharField(max_length=255, unique=True)
 
+    def __str__(self):
+        return self.name
+
 class Fruit(models.Model):
     name=models.CharField(max_length=30,
                           validators=[validators.MinLengthValidator(2),
